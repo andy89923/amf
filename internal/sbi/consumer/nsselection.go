@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/antihax/optional"
@@ -40,7 +39,13 @@ func NSSelectionGetForRegistration(ue *amf_context.AmfUe, requestedNssai []model
 			SliceInfoRequestForRegistration: optional.NewInterface(string(e)),
 		}
 	}
-	res, httpResp, localErr := client.NetworkSliceInformationDocumentApi.NSSelectionGet(context.Background(),
+
+	ctx, pd, err := GetTokenCtx("nnssf-nsselection", "NSSF")
+	if err != nil {
+		return pd, err
+	}
+
+	res, httpResp, localErr := client.NetworkSliceInformationDocumentApi.NSSelectionGet(ctx,
 		models.NfType_AMF, amfSelf.NfId, &paramOpt)
 	defer func() {
 		if httpResp != nil {
@@ -90,7 +95,13 @@ func NSSelectionGetForPduSession(ue *amf_context.AmfUe, snssai models.Snssai) (
 	paramOpt := Nnssf_NSSelection.NSSelectionGetParamOpts{
 		SliceInfoRequestForPduSession: optional.NewInterface(string(e)),
 	}
-	res, httpResp, localErr := client.NetworkSliceInformationDocumentApi.NSSelectionGet(context.Background(),
+
+	ctx, pd, err := GetTokenCtx("nnssf-nsselection", "NSSF")
+	if err != nil {
+		return nil, pd, err
+	}
+
+	res, httpResp, localErr := client.NetworkSliceInformationDocumentApi.NSSelectionGet(ctx,
 		models.NfType_AMF, amfSelf.NfId, &paramOpt)
 	defer func() {
 		if httpResp != nil {

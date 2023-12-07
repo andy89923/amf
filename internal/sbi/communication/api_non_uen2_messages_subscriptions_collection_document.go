@@ -19,6 +19,11 @@ import (
 
 // NonUeN2InfoSubscribe - Namf_Communication Non UE N2 Info Subscribe service Operation
 func HTTPNonUeN2InfoSubscribe(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	logger.CommLog.Warnf("Handle Non Ue N2 Info Subscribe is not implemented.")
 	c.JSON(http.StatusOK, gin.H{})
 }

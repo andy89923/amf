@@ -23,6 +23,11 @@ import (
 
 // ProvideDomainSelectionInfo - Namf_MT Provide Domain Selection Info service Operation
 func HTTPProvideDomainSelectionInfo(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["ueContextId"] = c.Params.ByName("ueContextId")
 	infoClassQuery := c.Query("info-class")

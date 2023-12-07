@@ -25,6 +25,11 @@ import (
 
 // CreateUEContext - Namf_Communication CreateUEContext service Operation
 func HTTPCreateUEContext(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var createUeContextRequest models.CreateUeContextRequest
 	createUeContextRequest.JsonData = new(models.UeContextCreateData)
 
@@ -99,6 +104,11 @@ func HTTPCreateUEContext(c *gin.Context) {
 
 // EBIAssignment - Namf_Communication EBI Assignment service Operation
 func HTTPEBIAssignment(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var assignEbiData models.AssignEbiData
 
 	requestBody, err := c.GetRawData()
@@ -147,6 +157,11 @@ func HTTPEBIAssignment(c *gin.Context) {
 
 // RegistrationStatusUpdate - Namf_Communication RegistrationStatusUpdate service Operation
 func HTTPRegistrationStatusUpdate(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var ueRegStatusUpdateReqData models.UeRegStatusUpdateReqData
 
 	requestBody, err := c.GetRawData()
@@ -195,6 +210,11 @@ func HTTPRegistrationStatusUpdate(c *gin.Context) {
 
 // ReleaseUEContext - Namf_Communication ReleaseUEContext service Operation
 func HTTPReleaseUEContext(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var ueContextRelease models.UeContextRelease
 
 	requestBody, err := c.GetRawData()
@@ -243,6 +263,11 @@ func HTTPReleaseUEContext(c *gin.Context) {
 
 // UEContextTransfer - Namf_Communication UEContextTransfer service Operation
 func HTTPUEContextTransfer(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var ueContextTransferRequest models.UeContextTransferRequest
 	ueContextTransferRequest.JsonData = new(models.UeContextTransferReqData)
 

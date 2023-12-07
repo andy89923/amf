@@ -17,6 +17,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/free5gc/amf/internal/logger"
+	"github.com/free5gc/amf/internal/util"
 	"github.com/free5gc/amf/pkg/factory"
 	logger_util "github.com/free5gc/util/logger"
 )
@@ -70,6 +71,10 @@ func AddService(engine *gin.Engine) *gin.RouterGroup {
 // Index is the index handler.
 func Index(c *gin.Context) {
 	c.String(http.StatusOK, "Hello World!")
+}
+
+func authorizationCheck(c *gin.Context) error {
+	return util.AuthorizationCheck(c, "aamf-comm")
 }
 
 var routes = Routes{

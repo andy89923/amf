@@ -1,13 +1,13 @@
 package callback
 
 import (
-	"context"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
 
 	amf_context "github.com/free5gc/amf/internal/context"
 	"github.com/free5gc/amf/internal/logger"
+	"github.com/free5gc/amf/internal/sbi/consumer"
 	"github.com/free5gc/openapi/Namf_Communication"
 	"github.com/free5gc/openapi/models"
 )
@@ -33,8 +33,14 @@ func SendN1N2TransferFailureNotification(ue *amf_context.AmfUe, cause models.N1N
 			N1n2MsgDataUri: n1n2Message.ResourceUri,
 		}
 
+		ctx, _, err := consumer.GetTokenCtx("namf-comm", "AMF")
+		if err != nil {
+			logger.ConsumerLog.Error("GetTokenCtx error:", err)
+			return
+		}
+
 		httpResponse, err := client.N1N2MessageTransferStatusNotificationCallbackDocumentApi.
-			N1N2TransferFailureNotification(context.Background(), uri, n1N2MsgTxfrFailureNotification)
+			N1N2TransferFailureNotification(ctx, uri, n1N2MsgTxfrFailureNotification)
 
 		if err != nil {
 			if httpResponse == nil {
@@ -71,8 +77,13 @@ func SendN1MessageNotify(ue *amf_context.AmfUe, n1class models.N1MessageClass, n
 				},
 				BinaryDataN1Message: n1Msg,
 			}
+			ctx, _, err := consumer.GetTokenCtx("namf-comm", "AMF")
+			if err != nil {
+				logger.ConsumerLog.Error("GetTokenCtx error:", err)
+			}
+
 			httpResponse, err := client.N1MessageNotifyCallbackDocumentApiServiceCallbackDocumentApi.
-				N1MessageNotify(context.Background(), subscription.N1NotifyCallbackUri, n1MessageNotify)
+				N1MessageNotify(ctx, subscription.N1NotifyCallbackUri, n1MessageNotify)
 			if err != nil {
 				if httpResponse == nil {
 					HttpLog.Errorln(err.Error())
@@ -113,9 +124,13 @@ func SendN1MessageNotifyAtAMFReAllocation(
 			break
 		}
 	}
+	ctx, _, err := consumer.GetTokenCtx("namf-comm", "AMF")
+	if err != nil {
+		logger.ConsumerLog.Error("GetTokenCtx error:", err)
+	}
 
 	httpResp, err := client.N1MessageNotifyCallbackDocumentApiServiceCallbackDocumentApi.
-		N1MessageNotify(context.Background(), callbackUri, n1MessageNotify)
+		N1MessageNotify(ctx, callbackUri, n1MessageNotify)
 	if err != nil {
 		if httpResp == nil {
 			HttpLog.Errorln(err.Error())
@@ -181,9 +196,13 @@ func SendN2InfoNotify(ue *amf_context.AmfUe, n2class models.N2InformationClass, 
 					},
 				}
 			}
+			ctx, _, err := consumer.GetTokenCtx("namf-comm", "AMF")
+			if err != nil {
+				logger.ConsumerLog.Error("GetTokenCtx error:", err)
+			}
 
 			httpResponse, err := client.N2InfoNotifyCallbackDocumentApiServiceCallbackDocumentApi.
-				N2InfoNotify(context.Background(), subscription.N2NotifyCallbackUri, n2InformationNotify)
+				N2InfoNotify(ctx, subscription.N2NotifyCallbackUri, n2InformationNotify)
 			if err != nil {
 				if httpResponse == nil {
 					HttpLog.Errorln(err.Error())

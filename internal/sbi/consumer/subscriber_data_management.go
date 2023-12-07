@@ -1,8 +1,6 @@
 package consumer
 
 import (
-	"context"
-
 	"github.com/antihax/optional"
 
 	amf_context "github.com/free5gc/amf/internal/context"
@@ -23,8 +21,14 @@ func PutUpuAck(ue *amf_context.AmfUe, upuMacIue string) error {
 	upuOpt := Nudm_SubscriberDataManagement.PutUpuAckParamOpts{
 		AcknowledgeInfo: optional.NewInterface(ackInfo),
 	}
+
+	ctx, _, err := GetTokenCtx("nudm-sdm", "UDM")
+	if err != nil {
+		return err
+	}
+
 	httpResp, err := client.ProvidingAcknowledgementOfUEParametersUpdateApi.
-		PutUpuAck(context.Background(), ue.Supi, &upuOpt)
+		PutUpuAck(ctx, ue.Supi, &upuOpt)
 	defer func() {
 		if httpResp != nil {
 			if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {
@@ -45,8 +49,13 @@ func SDMGetAmData(ue *amf_context.AmfUe) (problemDetails *models.ProblemDetails,
 		PlmnId: optional.NewInterface(openapi.MarshToJsonString(ue.PlmnId)),
 	}
 
+	ctx, pd, err := GetTokenCtx("nudm-sdm", "UDM")
+	if err != nil {
+		return pd, err
+	}
+
 	data, httpResp, localErr := client.AccessAndMobilitySubscriptionDataRetrievalApi.GetAmData(
-		context.Background(), ue.Supi, &getAmDataParamOpt)
+		ctx, ue.Supi, &getAmDataParamOpt)
 	defer func() {
 		if httpResp != nil {
 			if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {
@@ -79,8 +88,14 @@ func SDMGetSmfSelectData(ue *amf_context.AmfUe) (problemDetails *models.ProblemD
 	paramOpt := Nudm_SubscriberDataManagement.GetSmfSelectDataParamOpts{
 		PlmnId: optional.NewInterface(openapi.MarshToJsonString(ue.PlmnId)),
 	}
+
+	ctx, pd, err := GetTokenCtx("nudm-sdm", "UDM")
+	if err != nil {
+		return pd, err
+	}
+
 	data, httpResp, localErr := client.SMFSelectionSubscriptionDataRetrievalApi.
-		GetSmfSelectData(context.Background(), ue.Supi, &paramOpt)
+		GetSmfSelectData(ctx, ue.Supi, &paramOpt)
 	defer func() {
 		if httpResp != nil {
 			if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {
@@ -110,8 +125,13 @@ func SDMGetUeContextInSmfData(ue *amf_context.AmfUe) (problemDetails *models.Pro
 	configuration.SetBasePath(ue.NudmSDMUri)
 	client := Nudm_SubscriberDataManagement.NewAPIClient(configuration)
 
+	ctx, pd, err := GetTokenCtx("nudm-sdm", "UDM")
+	if err != nil {
+		return pd, err
+	}
+
 	data, httpResp, localErr := client.UEContextInSMFDataRetrievalApi.
-		GetUeContextInSmfData(context.Background(), ue.Supi, nil)
+		GetUeContextInSmfData(ctx, ue.Supi, nil)
 	defer func() {
 		if httpResp != nil {
 			if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {
@@ -125,7 +145,7 @@ func SDMGetUeContextInSmfData(ue *amf_context.AmfUe) (problemDetails *models.Pro
 	} else if httpResp != nil {
 		if httpResp.Status != localErr.Error() {
 			err = localErr
-			return
+			return problemDetails, err
 		}
 		problem := localErr.(openapi.GenericOpenAPIError).Model().(models.ProblemDetails)
 		problemDetails = &problem
@@ -133,7 +153,7 @@ func SDMGetUeContextInSmfData(ue *amf_context.AmfUe) (problemDetails *models.Pro
 		err = openapi.ReportError("server no response")
 	}
 
-	return
+	return problemDetails, err
 }
 
 func SDMSubscribe(ue *amf_context.AmfUe) (problemDetails *models.ProblemDetails, err error) {

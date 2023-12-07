@@ -1,10 +1,10 @@
 package callback
 
 import (
-	"context"
 	"fmt"
 
 	amf_context "github.com/free5gc/amf/internal/context"
+	"github.com/free5gc/amf/internal/sbi/consumer"
 	"github.com/free5gc/openapi/Namf_Communication"
 	"github.com/free5gc/openapi/models"
 )
@@ -22,8 +22,13 @@ func SendN2InfoNotifyN2Handover(ue *amf_context.AmfUe, releaseList []int32) erro
 		NotifyReason:           models.N2InfoNotifyReason_HANDOVER_COMPLETED,
 	}
 
+	ctx, _, err := consumer.GetTokenCtx("namf-comm", "AMF")
+	if err != nil {
+		return err
+	}
+
 	_, httpResponse, err := client.N2MessageNotifyCallbackDocumentApiServiceCallbackDocumentApi.
-		N2InfoNotify(context.Background(), ue.HandoverNotifyUri, n2InformationNotification)
+		N2InfoNotify(ctx, ue.HandoverNotifyUri, n2InformationNotification)
 
 	if err == nil {
 		// TODO: handle Msg

@@ -23,6 +23,11 @@ import (
 
 // DeleteSubscription - Namf_EventExposure Unsubscribe service Operation
 func HTTPDeleteSubscription(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["subscriptionId"] = c.Param("subscriptionId")
 
@@ -48,6 +53,11 @@ func HTTPDeleteSubscription(c *gin.Context) {
 
 // ModifySubscription - Namf_EventExposure Subscribe Modify service Operation
 func HTTPModifySubscription(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var modifySubscriptionRequest models.ModifySubscriptionRequest
 
 	requestBody, err := c.GetRawData()

@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
 
 	amf_context "github.com/free5gc/amf/internal/context"
@@ -73,8 +72,13 @@ func UeCmRegistration(ue *amf_context.AmfUe, accessType models.AccessType, initi
 			RatType:       ue.RatType,
 		}
 
+		ctx, pd, err := GetTokenCtx("nudm-uecm", "UDM")
+		if err != nil {
+			return pd, err
+		}
+
 		_, httpResp, localErr := client.AMFRegistrationForNon3GPPAccessApi.
-			Register(context.Background(), ue.Supi, registrationData)
+			Register(ctx, ue.Supi, registrationData)
 		defer func() {
 			if httpResp != nil {
 				if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {

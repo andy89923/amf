@@ -22,6 +22,11 @@ import (
 )
 
 func HTTPN1N2MessageSubscribe(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var ueN1N2InfoSubscriptionCreateData models.UeN1N2InfoSubscriptionCreateData
 
 	requestBody, err := c.GetRawData()

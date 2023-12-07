@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"context"
 	"regexp"
 
 	amf_context "github.com/free5gc/amf/internal/context"
@@ -36,7 +35,12 @@ func AMPolicyControlCreate(ue *amf_context.AmfUe, anType models.AccessType) (*mo
 		policyAssociationRequest.Rfsp = ue.AccessAndMobilitySubscriptionData.RfspIndex
 	}
 
-	res, httpResp, localErr := client.DefaultApi.PoliciesPost(context.Background(), policyAssociationRequest)
+	ctx, pd, err := GetTokenCtx("npcf-am-policy-control", "PCF")
+	if err != nil {
+		return pd, err
+	}
+
+	res, httpResp, localErr := client.DefaultApi.PoliciesPost(ctx, policyAssociationRequest)
 	defer func() {
 		if httpResp != nil {
 			if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {
@@ -88,8 +92,13 @@ func AMPolicyControlUpdate(ue *amf_context.AmfUe, updateRequest models.PolicyAss
 	configuration.SetBasePath(ue.PcfUri)
 	client := Npcf_AMPolicy.NewAPIClient(configuration)
 
+	ctx, pd, err := GetTokenCtx("npcf-am-policy-control", "PCF")
+	if err != nil {
+		return pd, err
+	}
+
 	res, httpResp, localErr := client.DefaultApi.PoliciesPolAssoIdUpdatePost(
-		context.Background(), ue.PolicyAssociationId, updateRequest)
+		ctx, ue.PolicyAssociationId, updateRequest)
 	defer func() {
 		if httpResp != nil {
 			if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {
@@ -134,7 +143,12 @@ func AMPolicyControlDelete(ue *amf_context.AmfUe) (problemDetails *models.Proble
 	configuration.SetBasePath(ue.PcfUri)
 	client := Npcf_AMPolicy.NewAPIClient(configuration)
 
-	httpResp, localErr := client.DefaultApi.PoliciesPolAssoIdDelete(context.Background(), ue.PolicyAssociationId)
+	ctx, pd, err := GetTokenCtx("npcf-am-policy-control", "PCF")
+	if err != nil {
+		return pd, err
+	}
+
+	httpResp, localErr := client.DefaultApi.PoliciesPolAssoIdDelete(ctx, ue.PolicyAssociationId)
 	defer func() {
 		if httpResp != nil {
 			if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {

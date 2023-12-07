@@ -23,6 +23,11 @@ import (
 
 // N1N2MessageUnSubscribe - Namf_Communication N1N2 Message UnSubscribe (UE Specific) service Operation
 func HTTPN1N2MessageUnSubscribe(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["ueContextId"] = c.Params.ByName("ueContextId")
 	req.Params["subscriptionId"] = c.Params.ByName("subscriptionId")

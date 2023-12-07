@@ -23,6 +23,11 @@ import (
 
 // ProvideLocationInfo - Namf_Location ProvideLocationInfo service Operation
 func HTTPProvideLocationInfo(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	var requestLocInfo models.RequestLocInfo
 
 	requestBody, err := c.GetRawData()
@@ -72,6 +77,11 @@ func HTTPProvideLocationInfo(c *gin.Context) {
 
 // ProvidePositioningInfo - Namf_Location ProvidePositioningInfo service Operation
 func HTTPProvidePositioningInfo(c *gin.Context) {
+	auth_err := authorizationCheck(c)
+	if auth_err != nil {
+		return
+	}
+
 	logger.LocationLog.Warnf("Handle Provide Positioning Info is not implemented.")
 	c.JSON(http.StatusOK, gin.H{})
 }
