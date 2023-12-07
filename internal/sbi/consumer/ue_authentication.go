@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"context"
 	"encoding/base64"
 	"fmt"
 	"net/url"
@@ -39,7 +38,12 @@ func SendUEAuthenticationAuthenticateRequest(ue *amf_context.AmfUe,
 		authInfo.ResynchronizationInfo = resynchronizationInfo
 	}
 
-	ueAuthenticationCtx, httpResponse, err := client.DefaultApi.UeAuthenticationsPost(context.Background(), authInfo)
+	ctx, pd, err := GetTokenCtx("nausf-auth", "AUSF")
+	if err != nil {
+		return nil, pd, err
+	}
+
+	ueAuthenticationCtx, httpResponse, err := client.DefaultApi.UeAuthenticationsPost(ctx, authInfo)
 	defer func() {
 		if httpResponse != nil {
 			if rspCloseErr := httpResponse.Body.Close(); rspCloseErr != nil {
@@ -81,8 +85,13 @@ func SendAuth5gAkaConfirmRequest(ue *amf_context.AmfUe, resStar string) (
 		}),
 	}
 
+	ctx, pd, err := GetTokenCtx("nausf-auth", "AUSF")
+	if err != nil {
+		return nil, pd, err
+	}
+
 	confirmResult, httpResponse, err := client.DefaultApi.UeAuthenticationsAuthCtxId5gAkaConfirmationPut(
-		context.Background(), ue.Suci, confirmData)
+		ctx, ue.Suci, confirmData)
 	defer func() {
 		if httpResponse != nil {
 			if rspCloseErr := httpResponse.Body.Close(); rspCloseErr != nil {
@@ -127,7 +136,12 @@ func SendEapAuthConfirmRequest(ue *amf_context.AmfUe, eapMsg nasType.EAPMessage)
 		}),
 	}
 
-	eapSession, httpResponse, err := client.DefaultApi.EapAuthMethod(context.Background(), ue.Suci, eapSessionReq)
+	ctx, pd, err := GetTokenCtx("nausf-auth", "AUSF")
+	if err != nil {
+		return nil, pd, err
+	}
+
+	eapSession, httpResponse, err := client.DefaultApi.EapAuthMethod(ctx, ue.Suci, eapSessionReq)
 	defer func() {
 		if httpResponse != nil {
 			if rspCloseErr := httpResponse.Body.Close(); rspCloseErr != nil {

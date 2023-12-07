@@ -39,7 +39,12 @@ func UeCmRegistration(ue *amf_context.AmfUe, accessType models.AccessType, initi
 			ImsVoPs: models.ImsVoPs_HOMOGENEOUS_NON_SUPPORT,
 		}
 
-		_, httpResp, localErr := client.AMFRegistrationFor3GPPAccessApi.Registration(context.Background(),
+		ctx, pd, err := GetTokenCtx("nudm-uecm", "UDM")
+		if err != nil {
+			return pd, err
+		}
+
+		_, httpResp, localErr := client.AMFRegistrationFor3GPPAccessApi.Registration(ctx,
 			ue.Supi, registrationData)
 		defer func() {
 			if httpResp != nil {
@@ -111,7 +116,12 @@ func UeCmDeregistration(ue *amf_context.AmfUe, accessType models.AccessType) (
 			PurgeFlag: true,
 		}
 
-		httpResp, localErr := client.ParameterUpdateInTheAMFRegistrationFor3GPPAccessApi.Update(context.Background(),
+		ctx, pd, err := GetTokenCtx("nudm-uecm", "UDM")
+		if err != nil {
+			return pd, err
+		}
+
+		httpResp, localErr := client.ParameterUpdateInTheAMFRegistrationFor3GPPAccessApi.Update(ctx,
 			ue.Supi, modificationData)
 		defer func() {
 			if httpResp != nil {
@@ -137,9 +147,13 @@ func UeCmDeregistration(ue *amf_context.AmfUe, accessType models.AccessType) (
 			Guami:     &amfSelf.ServedGuamiList[0],
 			PurgeFlag: true,
 		}
+		ctx, pd, err := GetTokenCtx("nudm-uecm", "UDM")
+		if err != nil {
+			return pd, err
+		}
 
 		httpResp, localErr := client.ParameterUpdateInTheAMFRegistrationForNon3GPPAccessApi.UpdateAmfNon3gppAccess(
-			context.Background(), ue.Supi, modificationData)
+			ctx, ue.Supi, modificationData)
 		defer func() {
 			if httpResp != nil {
 				if rspCloseErr := httpResp.Body.Close(); rspCloseErr != nil {
