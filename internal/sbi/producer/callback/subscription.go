@@ -1,11 +1,11 @@
 package callback
 
 import (
+	"context"
 	"reflect"
 
 	amf_context "github.com/free5gc/amf/internal/context"
 	"github.com/free5gc/amf/internal/logger"
-	"github.com/free5gc/amf/internal/sbi/consumer"
 	"github.com/free5gc/openapi/Namf_Communication"
 	"github.com/free5gc/openapi/models"
 )
@@ -39,14 +39,9 @@ func SendAmfStatusChangeNotify(amfStatus string, guamiList []models.Guami) {
 		amfStatusNotification.AmfStatusInfoList = append(amfStatusNotification.AmfStatusInfoList, amfStatusInfo)
 		uri := subscriptionData.AmfStatusUri
 
-		ctx, _, err := consumer.GetTokenCtx("namf-comm", "AMF")
-		if err != nil {
-			logger.ConsumerLog.Error(err)
-		}
-
 		logger.ProducerLog.Infof("[AMF] Send Amf Status Change Notify to %s", uri)
 		httpResponse, err := client.AmfStatusChangeCallbackDocumentApiServiceCallbackDocumentApi.
-			AmfStatusChangeNotify(ctx, uri, amfStatusNotification)
+			AmfStatusChangeNotify(context.Background(), uri, amfStatusNotification)
 		if err != nil {
 			if httpResponse == nil {
 				HttpLog.Errorln(err.Error())
