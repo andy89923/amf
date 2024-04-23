@@ -1,17 +1,17 @@
 module github.com/free5gc/amf
 
-go 1.17
+go 1.21
 
 require (
 	github.com/antihax/optional v1.0.0
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/davecgh/go-spew v1.1.1
 	github.com/free5gc/aper v1.0.5
-	github.com/free5gc/nas v1.1.2
-	github.com/free5gc/ngap v1.0.7
-	github.com/free5gc/openapi v1.0.7
+	github.com/free5gc/nas v1.1.3
+	github.com/free5gc/ngap v1.0.8
+	github.com/free5gc/openapi v1.0.8
 	github.com/free5gc/sctp v1.0.0
-	github.com/free5gc/util v1.0.5
+	github.com/free5gc/util v1.0.6
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.3.0
@@ -57,10 +57,10 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20210810183815-faf39c7919d5 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
